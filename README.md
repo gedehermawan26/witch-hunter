@@ -1,2 +1,2 @@
 # witch-hunter
-Hallo this sample program that implement simple java OOP.
+Hallo this is sample program that implement simple java OOP concept such as abstaraction and encapsulation
