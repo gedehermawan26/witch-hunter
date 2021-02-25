@@ -8,7 +8,7 @@ import geekseat.interfaces.WitchInterface;
 
 public class WitctHunterMain {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NegativeNumberException {
 		run();
 	}
 	

@@ -29,6 +29,10 @@ public class WitchImpl implements WitchInterface {
 	
 	@Override
 	public double averagePeopleDead(int firstYear,int age1, int year1, int age2, int year2) throws NegativeNumberException, YearBornNotValidException {
+		if(firstYear < 0) {
+			throw new NegativeNumberException("First Year");
+		}
+		
 		if(age1 < 0 || age2 < 0 || year1 < 0 || year2 < 0) {
 			throw new NegativeNumberException("Age or Year");
 		}
