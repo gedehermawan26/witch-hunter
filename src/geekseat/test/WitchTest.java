@@ -2,11 +2,14 @@ package geekseat.test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import geekseat.entity.Villager;
 import geekseat.exception.NegativeNumberException;
 import geekseat.exception.YearBornNotValidException;
 import geekseat.implementation.WitchImpl;
@@ -42,7 +45,7 @@ public class WitchTest {
 			int result = witch.countDiedVillagers(year);
 			assertTrue(result<0);
 		} catch (NegativeNumberException e) {
-			System.out.println(e.getMessage());
+			System.out.println("testOverflowValueCountDiedVillagers : "+e.getMessage());
 		}
 		
 	}
@@ -64,7 +67,7 @@ public class WitchTest {
 			int result = witch.countDiedVillagers(year);
 			assertTrue(result==0);
 		} catch (NegativeNumberException e) {
-			System.out.println(e.getMessage());
+			System.out.println("testZeroInputCountDiedVillagers : "+e.getMessage());
 		}
 	}
 	
@@ -81,7 +84,7 @@ public class WitchTest {
 			int result = witch.countDiedVillagers(year);
 			assertTrue(result==1);
 		} catch (NegativeNumberException e) {
-			System.out.println(e.getMessage());
+			System.out.println("testOneInputCountDiedVillagers : "+e.getMessage());
 		}
 	}
 	
@@ -93,7 +96,7 @@ public class WitchTest {
 			int result = witch.countDiedVillagers(year);
 			assertTrue(result==12);
 		} catch (NegativeNumberException e) {
-			System.out.println(e.getMessage());
+			System.out.println("testRightInputCountDiedVillagers : "+e.getMessage());
 		}
 	}
 
@@ -227,7 +230,7 @@ public class WitchTest {
 			double result = witch.averagePeopleDead(firstYear, age1, year1, age2, year2);
 			assertTrue(result<0);
 		} catch (NegativeNumberException | YearBornNotValidException e) {
-			System.out.println(e.getMessage());
+			System.out.println("testDeadYearOneOverflowAveragePeopleDead : "+e.getMessage());
 		}
 	}
 	
@@ -243,7 +246,7 @@ public class WitchTest {
 			double result = witch.averagePeopleDead(firstYear, age1, year1, age2, year2);
 			assertTrue(result<0);
 		} catch (NegativeNumberException | YearBornNotValidException e) {
-			System.out.println(e.getMessage());
+			System.out.println("testDeadYearTwoOverflowAveragePeopleDead : "+e.getMessage());
 		}
 	}
 	
@@ -259,8 +262,107 @@ public class WitchTest {
 			double result = witch.averagePeopleDead(firstYear, age1, year1, age2, year2);
 			assertTrue(result==4.5);
 		} catch (NegativeNumberException | YearBornNotValidException e) {
-			System.out.println(e.getMessage());
+			System.out.println("testRightAveragePeopleDead : "+e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testNegativeAgeAverageListOfPeopleDead() throws NegativeNumberException, YearBornNotValidException {
+		int firstYear = 1;
+		ArrayList<Villager> villagers = new ArrayList<Villager>();
+		villagers.add(new Villager(-2,4));
+		villagers.add(new Villager(2,5));
+		villagers.add(new Villager(2,6));
+		
+		exceptionRule.expect(NegativeNumberException.class);
+		exceptionRule.expectMessage("Age or Year (Age : "+villagers.get(0).getAge()+", Year : "+villagers.get(0).getYear()+")");
+		witch.averageListOfPeopleDead(firstYear, villagers);
+	}
+	
+	@Test
+	public void testNegativeYearAverageListOfPeopleDead() throws NegativeNumberException, YearBornNotValidException {
+		int firstYear = 1;
+		ArrayList<Villager> villagers = new ArrayList<Villager>();
+		villagers.add(new Villager(2,4));
+		villagers.add(new Villager(2,-5));
+		villagers.add(new Villager(2,6));
+		
+		exceptionRule.expect(NegativeNumberException.class);
+		exceptionRule.expectMessage("Age or Year (Age : "+villagers.get(1).getAge()+", Year : "+villagers.get(1).getYear()+")");
+		witch.averageListOfPeopleDead(firstYear, villagers);
+	}
+	
+	@Test
+	public void testNegativeDifferenceAgeYearAverageListOfPeopleDead() throws NegativeNumberException, YearBornNotValidException {
+		int firstYear = 1;
+		ArrayList<Villager> villagers = new ArrayList<Villager>();
+		villagers.add(new Villager(2,4));
+		villagers.add(new Villager(2,5));
+		villagers.add(new Villager(6,2));
+		
+		exceptionRule.expect(NegativeNumberException.class);
+		exceptionRule.expectMessage("Difference between age and year of dead (Age : "+villagers.get(2).getAge()+", Year : "+villagers.get(2).getYear()+")");
+		witch.averageListOfPeopleDead(firstYear, villagers);
+	}
+	
+	@Test
+	public void testNegativeFirstYearWitchTakeControllAverageListOfPeopleDead() throws NegativeNumberException, YearBornNotValidException {
+		int firstYear = -1;
+		ArrayList<Villager> villagers = new ArrayList<Villager>();
+		villagers.add(new Villager(2,4));
+		villagers.add(new Villager(2,5));
+		villagers.add(new Villager(2,6));
+		
+		exceptionRule.expect(NegativeNumberException.class);
+		exceptionRule.expectMessage("First Year must be greater than 0");
+		witch.averageListOfPeopleDead(firstYear, villagers);
+	}
+	
+	@Test
+	public void testDeadYearOverflowAverageListOfPeopleDead() {
+		int firstYear = 1;
+		ArrayList<Villager> villagers = new ArrayList<Villager>();
+		villagers.add(new Villager(2,4));
+		villagers.add(new Villager(2,5));
+		villagers.add(new Villager(2,47));
+				
+		try {
+			double result = witch.averageListOfPeopleDead(firstYear, villagers);
+			assertTrue(result<0);
+		} catch (NegativeNumberException | YearBornNotValidException e) {
+			System.out.println("testDeadYearOverflowAverageListOfPeopleDead : "+e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAgeBeforeFirstYearWitchControlAverageListOfPeopleDead() throws NegativeNumberException, YearBornNotValidException {
+		int firstYear = 10;
+		ArrayList<Villager> villagers = new ArrayList<Villager>();
+		villagers.add(new Villager(2,4));
+		villagers.add(new Villager(11,17));
+		villagers.add(new Villager(2,47));
+		
+		exceptionRule.expect(YearBornNotValidException.class);
+		exceptionRule.expectMessage("Year born must be greater than or equals the witch take control");
+		witch.averageListOfPeopleDead(firstYear, villagers);
+	}
+	
+	@Test
+	public void testRightInputAverageListOfPeopleDead() {
+		int firstYear = 1;
+		ArrayList<Villager> villagers = new ArrayList<Villager>();
+		villagers.add(new Villager(2,5));
+		villagers.add(new Villager(2,6));
+		villagers.add(new Villager(2,7));
+		villagers.add(new Villager(2,8));
+				
+		try {
+			double result = witch.averageListOfPeopleDead(firstYear, villagers);
+			assertTrue(result==10.75);
+		} catch (NegativeNumberException | YearBornNotValidException e) {
+			System.out.println("testRightInputAverageListOfPeopleDead : "+e.getMessage());
 		}
 	}
 
+	
 }

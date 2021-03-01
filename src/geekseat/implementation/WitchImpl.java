@@ -1,5 +1,8 @@
 package geekseat.implementation;
 
+import java.util.ArrayList;
+
+import geekseat.entity.Villager;
 import geekseat.exception.NegativeNumberException;
 import geekseat.exception.YearBornNotValidException;
 import geekseat.interfaces.WitchInterface;
@@ -51,6 +54,35 @@ public class WitchImpl implements WitchInterface {
 		int peopleDead2 = countDiedVillagers(deadYearP2);
 		double averageDead = (peopleDead1+peopleDead2)*1.0/2;
 		return averageDead;
+	}
+
+	@Override
+	public double averageListOfPeopleDead(int firstYear, ArrayList<Villager> villagers) throws NegativeNumberException, YearBornNotValidException {
+		int totalPeopleDead = 0;
+		
+		if(firstYear < 0) {
+			throw new NegativeNumberException("First Year");
+		}
+		
+		for(Villager v : villagers) {		
+			if(v.getAge() < 0 || v.getYear() < 0) {
+				throw new NegativeNumberException("Age or Year (Age : "+v.getAge()+", Year : "+v.getYear()+")");
+			}
+			
+			if(v.getYear() < firstYear) {
+				throw new YearBornNotValidException();
+			}
+			
+			int deadYear = v.getYear() - v.getAge();
+			
+			if(deadYear < 0) {
+				throw new NegativeNumberException("Difference between age and year of dead (Age : "+v.getAge()+", Year : "+v.getYear()+")");
+			}
+			
+			totalPeopleDead +=countDiedVillagers(deadYear);
+		}
+		
+		return (totalPeopleDead*1.0)/villagers.size();
 	}
 
 }
